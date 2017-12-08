@@ -1,0 +1,9 @@
+version: '2'
+services:
+
+  watcher:
+    build:
+      context: watcher/
+    volumes:
+      - ../project:/app
+    stdin_open: true
