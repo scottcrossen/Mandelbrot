@@ -1,30 +1,17 @@
-/*
-  This program is an adaptation of the Mandelbrot program
-  from the Programming Rosetta Stone, see
-  http://rosettacode.org/wiki/Mandelbrot_set
-  Compile the program with:
-  gcc -o mandelbrot -O4 mandelbrot.c
-  Usage:
-
-  ./mandelbrot <xmin> <xmax> <ymin> <ymax> <maxiter> <xres> <out.ppm>
-  Example:
-  ./mandelbrot 0.27085 0.27100 0.004640 0.004810 1000 1024 pic.ppm
-  The interior of Mandelbrot set is black, the levels are gray.
-  If you have very many levels, the picture is likely going to be quite
-  dark. You can postprocess it to fix the palette. For instance,
-  with ImageMagick you can do (assuming the picture was saved to pic.ppm):
-  convert -normalize pic.ppm pic.png
-  The resulting pic.png is still gray, but the levels will be nicer. You
-  can also add colors, for instance:
-  convert -negate -normalize -fill blue -tint 100 pic.ppm pic.png
-  See http://www.imagemagick.org/Usage/color_mods/ for what ImageMagick
-  can do. It can do a lot.
-*/
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <stdint.h>
+#include <sys/time.h>
+#include <string.h>
+
+
+double current_time()
+{
+  struct timeval time;
+  gettimeofday(&time, NULL);
+  return ((double) time.tv_sec + (double) time.tv_usec * 1e-6);
+}
 
 int main(int argc, char* argv[])
 {
@@ -53,7 +40,7 @@ int main(int argc, char* argv[])
 
   /* Open the file and write the header. */
   FILE * fp = fopen(filename,"wb");
-  char *comment="# Mandelbrot set";/* comment should start with # */
+  //char *comment="# Mandelbrot set";/* comment should start with # */
 
   /*write ASCII header to the file*/
   fprintf(fp,
@@ -65,9 +52,21 @@ int main(int argc, char* argv[])
   double dy=(ymax-ymin)/yres;
 
   double x, y; /* Coordinates of the current point in the complex plane. */
-  double u, v; /* Coordinates of the iterated point. */
+  //double u, v; /* Coordinates of the iterated point. */
   int i,j; /* Pixel counters */
   int k; /* Iteration counter */
+
+  // Initialize results
+  unsigned char*** result = (unsigned char***) malloc(sizeof(unsigned char**) * xres); // x column
+  for (int i = 0; i < xres; i++) {
+      result[i] = (unsigned char**) malloc(sizeof(unsigned char*) * yres); // y column
+      for(int j = 0; j < yres; j++) {
+          result[i][j] = (unsigned char*) malloc(sizeof(unsigned char) * 6); // pixel
+      }
+  }
+
+  double start_time = current_time();
+  #pragma omp parallel for private(i,j,k,y,x,u,v)
   for (j = 0; j < yres; j++) {
     y = ymax - j * dy;
     for(i = 0; i < xres; i++) {
@@ -87,7 +86,7 @@ int main(int argc, char* argv[])
       if (k >= maxiter) {
         /* interior */
         const unsigned char black[] = {0, 0, 0, 0, 0, 0};
-        fwrite (black, 6, 1, fp);
+        memcpy (result[i][j], black, 6);
       }
       else {
         /* exterior */
@@ -98,10 +97,29 @@ int main(int argc, char* argv[])
         color[3] = k & 255;
         color[4] = k >> 8;
         color[5] = k & 255;
-        fwrite(color, 6, 1, fp);
+        memcpy (result[i][j], color, 6);
       };
     }
   }
+  double stop_time = current_time();
+  printf("Elapsed time: %f\n", stop_time - start_time);
+
+  // Write results to file
+  for(int j = 0; j < yres; j++) {
+      for (int i = 0; i < xres; i++) {
+          fwrite(result[i][j], 6, 1, fp);
+      }
+  }
+
+  // Free results
+  for (int i = 0; i < xres; i++) {
+      for(int j = 0; j < yres; j++) {
+        free(result[i][j]);
+      }
+      free(result[i]);
+  }
+  free(result);
+
   fclose(fp);
   return 0;
 }

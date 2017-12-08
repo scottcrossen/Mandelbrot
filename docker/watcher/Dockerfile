@@ -1,7 +1,7 @@
 FROM ubuntu:16.04
 
 RUN apt-get update \
-  && apt-get install -y inotify-tools make perl gcc net-tools curl python \
+  && apt-get install -y inotify-tools make perl gcc net-tools curl imagemagick \
   && rm -rf /var/lib/apt/lists/*
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
