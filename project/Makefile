@@ -10,7 +10,7 @@ RELDIR = rel
 COMP = gcc
 BINOBJS = ${BINDIR}/mandelbrot.o
 MAIN = ${RELDIR}/mandelbrot
-COMPFLAGS = -g -Wall
+COMPFLAGS = -g -fopenmp -Wall
 LINKFLAGS =
 
 # ==== Recipes ====

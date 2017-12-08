@@ -1,3 +1,13 @@
+// Test Output
+// Testing with 1 thread(s)
+// Elapsed time: 91.134314 seconds
+// Testing with 2 thread(s)
+// Elapsed time: 51.067848 seconds
+// Testing with 4 thread(s)
+// Elapsed time: 29.230112 seconds
+// Testing with 8 thread(s)
+// Elapsed time: 16.049782 seconds
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -52,7 +62,7 @@ int main(int argc, char* argv[])
   double dy=(ymax-ymin)/yres;
 
   double x, y; /* Coordinates of the current point in the complex plane. */
-  //double u, v; /* Coordinates of the iterated point. */
+  double u, v; /* Coordinates of the iterated point. */
   int i,j; /* Pixel counters */
   int k; /* Iteration counter */
 
@@ -70,8 +80,8 @@ int main(int argc, char* argv[])
   for (j = 0; j < yres; j++) {
     y = ymax - j * dy;
     for(i = 0; i < xres; i++) {
-      double u = 0.0;
-      double v= 0.0;
+      u = 0.0;
+      v = 0.0;
       double u2 = u * u;
       double v2 = v*v;
       x = xmin + i * dx;
@@ -102,7 +112,7 @@ int main(int argc, char* argv[])
     }
   }
   double stop_time = current_time();
-  printf("Elapsed time: %f\n", stop_time - start_time);
+  printf("Elapsed time: %f seconds\n", stop_time - start_time);
 
   // Write results to file
   for(int j = 0; j < yres; j++) {
