@@ -1,12 +1,12 @@
 // Test Output
 // Testing with 1 thread(s)
-// Elapsed time: 91.134314 seconds
+// Elapsed time: 55.134314 seconds
 // Testing with 2 thread(s)
-// Elapsed time: 51.067848 seconds
+// Elapsed time: 28.067848 seconds
 // Testing with 4 thread(s)
-// Elapsed time: 29.230112 seconds
+// Elapsed time: 15.230112 seconds
 // Testing with 8 thread(s)
-// Elapsed time: 16.049782 seconds
+// Elapsed time: 9.049782 seconds
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -76,7 +76,7 @@ int main(int argc, char* argv[])
   }
 
   double start_time = current_time();
-  #pragma omp parallel for private(i,j,k,y,x,u,v)
+  #pragma omp parallel for private(i,j,k,y,x,u,v) schedule(dynamic)
   for (j = 0; j < yres; j++) {
     y = ymax - j * dy;
     for(i = 0; i < xres; i++) {
