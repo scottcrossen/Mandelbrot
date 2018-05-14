@@ -4,11 +4,11 @@
 # ==== Definitions ====
 
 BYUNETID = slxn42
-BINDIR = bin
+TMPDIR = tmp
 SOURCEDIR = src
 RELDIR = rel
 COMP = gcc
-BINOBJS = ${BINDIR}/mandelbrot.o
+BINOBJS = ${TMPDIR}/mandelbrot.o
 MAIN = ${RELDIR}/mandelbrot
 COMPFLAGS = -g -fopenmp -Wall
 LINKFLAGS =
@@ -24,17 +24,17 @@ all: $(MAIN)
 
 .PHONY: clean
 clean:
-	rm -rf $(BINDIR) $(RELDIR) $(MAIN)
+	rm -rf $(TMPDIR) $(RELDIR) $(MAIN)
 
 # ==== Targets ====
 
-.PRECIOUS: ${BINDIR}/mandelbrot.o
-${BINDIR}/mandelbrot.o: ${SOURCEDIR}/mandelbrot.c
+.PRECIOUS: ${TMPDIR}/mandelbrot.o
+${TMPDIR}/mandelbrot.o: ${SOURCEDIR}/mandelbrot.c
 	mkdir -p $(@D)
 	$(COMP) -c $< -o $@ $(COMPFLAGS)
 
-.PRECIOUS: ${BINDIR}/%.o
-${BINDIR}/%.o: ${SOURCEDIR}/%.c ${SOURCEDIR}/%.h
+.PRECIOUS: ${TMPDIR}/%.o
+${TMPDIR}/%.o: ${SOURCEDIR}/%.c ${SOURCEDIR}/%.h
 	mkdir -p $(@D)
 	$(COMP) -c $< -o $@ $(COMPFLAGS)
 
