@@ -4,9 +4,8 @@ A simple parallelized demonstration
 
 ### Description
 
-This project is a demonstration of the OpenMP library applied to calculating the Mandelbrot set.
+This project is a demonstration of the OpenMP library applied to calculating the Mandelbrot set. A docker-build system is included for cross-platform development and isolation. It also faciliates the rebuilding process whenever a change is made to source files.
 
-Many of the files contained in this repository also fulfill some of the requirements for the BYU course titled CS 324.
 It is written and maintained by Scott Leland Crossen.
 
 ### Contributors
